@@ -11,7 +11,6 @@ export default class Contacts extends Component {
       <div className={classes.list}>
         <Filter
           handleChange={handleChange}
-          isFilterEnabled={!!contacts.length}
         />
         {!!contacts.length && <ul>
           {contacts.map(({ id, name, number }) => (
