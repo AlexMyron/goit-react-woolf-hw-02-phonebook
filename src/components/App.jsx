@@ -19,12 +19,11 @@ class App extends Component {
   addContact = e => {
     e.preventDefault();
     const formEl = e.target;
-    const { name, number } = this.state;
+    const { name, number, contacts } = this.state;
 
     if (!name || !number) return;
 
-    const contactData = { name, number };
-    const isContactExists = this.state.contacts.some(
+    const isContactExists = contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
@@ -34,13 +33,12 @@ class App extends Component {
       return;
     }
 
-    contactData.id = nanoid();
     this.setState(prev => ({
       ...prev,
-      contacts: [...prev.contacts, contactData],
+      contacts: [...prev.contacts, { name, number, id: nanoid() }],
+      name: '',
+      number: '',
     }));
-
-    this.setState({ name: '', number: '' });
 
     formEl.reset();
   };
@@ -61,8 +59,8 @@ class App extends Component {
     const { filter: query } = this.state;
     if (!contacts.length) return;
 
-    const searchedContact = contacts.filter(contact =>
-      contact.name.startsWith(query)
+    const searchedContact = contacts.filter(({ name }) =>
+      name.toLowerCase().startsWith(query.toLowerCase())
     );
     return searchedContact;
   };
@@ -97,6 +95,7 @@ class App extends Component {
             contacts={filteredContacts || []}
             handleChange={this.handleChange}
             handleDelete={this.handleDelete}
+            isFilterDisabled={!this.state.contacts.length}
           />
         </Section>
         <ToastContainer />

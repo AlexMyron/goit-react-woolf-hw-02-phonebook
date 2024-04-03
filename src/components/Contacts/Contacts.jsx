@@ -6,11 +6,12 @@ import classes from './Contacts.module.css';
 
 export default class Contacts extends Component {
   render() {
-    const { contacts, handleChange, handleDelete } = this.props;
+    const { contacts, handleChange, handleDelete, isFilterDisabled } = this.props;
     return (
       <div className={classes.list}>
         <Filter
           handleChange={handleChange}
+          isFilterDisabled={isFilterDisabled}
         />
         {!!contacts.length && <ul>
           {contacts.map(({ id, name, number }) => (
