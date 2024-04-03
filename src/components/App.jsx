@@ -57,19 +57,18 @@ class App extends Component {
   handleFilter = () => {
     const contacts = [...this.state.contacts];
     const { filter: query } = this.state;
-    if (!contacts.length) return;
+    if (!contacts.length) return [];
 
-    const searchedContact = contacts.filter(({ name }) =>
+    return contacts.filter(({ name }) =>
       name.toLowerCase().startsWith(query.toLowerCase())
     );
-    return searchedContact;
   };
 
   handleDelete = id => {
     this.setState(prev => {
       const contacts = [...prev.contacts];
       const idx = contacts.findIndex(contact => contact.id === id);
-      contacts.splice(idx, 1);
+      idx > -1 && contacts.splice(idx, 1);
       return { ...prev, contacts };
     });
   };
