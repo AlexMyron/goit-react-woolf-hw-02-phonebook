@@ -19,11 +19,6 @@
   background-color: rgb(158, 7, 7);
 }
 
-.list {
-  padding: 40px;
-  border: 1px solid #010101;
-}
-
 .item {
   display: flex;
   justify-content: space-between;

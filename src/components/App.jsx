@@ -7,40 +7,30 @@ import 'react-toastify/dist/ReactToastify.css';
 import Section from './Section/Section';
 import Form from './Form/Form';
 import Contacts from './Contacts/Contacts';
+import Filter from './Filter/Filter';
 
 class App extends Component {
   state = {
     contacts: [],
-    name: '',
-    number: '',
     filter: '',
   };
 
-  addContact = e => {
-    e.preventDefault();
-    const formEl = e.target;
-    const { name, number, contacts } = this.state;
-
-    if (!name || !number) return;
+  handleContactAdd = newContact => {
+    const { contacts } = this.state;
 
     const isContactExists = contacts.some(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
 
     if (isContactExists) {
-      toast(`Contact "${name}" already exists`);
-      formEl.reset();
+      toast(`Contact "${newContact.name}" already exists`);
       return;
     }
 
     this.setState(prev => ({
       ...prev,
-      contacts: [...prev.contacts, { name, number, id: nanoid() }],
-      name: '',
-      number: '',
+      contacts: [...prev.contacts, { ...newContact, id: nanoid() }],
     }));
-
-    formEl.reset();
   };
 
   handleChange = e => {
@@ -67,9 +57,8 @@ class App extends Component {
   handleDelete = id => {
     this.setState(prev => {
       const contacts = [...prev.contacts];
-      const idx = contacts.findIndex(contact => contact.id === id);
-      idx > -1 && contacts.splice(idx, 1);
-      return { ...prev, contacts };
+      const updatedContacts = contacts.filter(contact => contact.id !== id);
+      return { ...prev, contacts: updatedContacts };
     });
   };
 
@@ -87,15 +76,19 @@ class App extends Component {
         }}
       >
         <Section title="Phonebook">
-          <Form addContact={this.addContact} handleChange={this.handleChange} />
+          <Form handleContactAdd={this.handleContactAdd} />
         </Section>
         <Section title="Contacts">
-          <Contacts
-            contacts={filteredContacts || []}
+          <Filter
             handleChange={this.handleChange}
-            handleDelete={this.handleDelete}
             isFilterDisabled={!this.state.contacts.length}
           />
+          {!!filteredContacts.length && (
+            <Contacts
+              contacts={filteredContacts || []}
+              handleDelete={this.handleDelete}
+            />
+          )}
         </Section>
         <ToastContainer />
       </div>
